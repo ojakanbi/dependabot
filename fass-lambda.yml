@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sample-lambda - minimal function used to mimic a work repo for
+  testing CI/Dependabot behavior.
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+    Runtime: python3.12
+    Tracing: Active
+
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
+Resources:
+  SampleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub sample-lambda-${Stage}
+      Handler: lambda_function.handler
+      CodeUri: src/
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+
+Outputs:
+  SampleFunctionArn:
+    Description: ARN of the sample Lambda function
+    Value: !GetAtt SampleFunction.Arn
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello"

@@ -1,0 +1,15 @@
+[project]
+name = "sample-lambda"
+version = "0.1.0"
+description = "Sample AWS Lambda function repo for testing CI/Dependabot workflows"
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+[build-system]
+requires = ["setuptools"]
+build-backend = "setpuptools.build_meta"
+[tools.setuptools]
+include-package-data = true 
+[tool.setuptools.package-data]
+"a" = ["*.yaml"]
